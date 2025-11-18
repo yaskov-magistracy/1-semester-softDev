@@ -4,9 +4,9 @@ from litestar.di import Provide
 import uvicorn
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession, AsyncAttrs
 from typing import AsyncGenerator
-from app.services.user_service import *
-from app.repositories.user_repository import *
-from app.controllers.user_controller import *
+from services.user_service import *
+from repositories.user_repository import *
+from controllers.user_controller import *
 
 # Настройка базы данных
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql+asyncpg://postgres:password@localhost:5432/python?async_fallback=True")
@@ -39,8 +39,10 @@ app = Litestar(
     dependencies={
         "db_session": Provide(provide_db_session),
         "user_repository": Provide(provide_user_repository),
+        "user_service": Provide(provide_user_service),
     },
+    debug=True
 )
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="127.0.0.1", port=8000)

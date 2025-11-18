@@ -51,10 +51,11 @@ class UserRepository():
         if user_update.description is not None and user_update.description != "":
             user.description = user_update.description
         
-        self.session.commit()
-        self.session.refresh(user)
+        await self.session.commit()
+        await self.session.refresh(user)
         return user
 
-    async def elete(self, id: UUID) -> None:
+    async def delete(self, id: UUID) -> None:
         await self.session.execute(
             delete(User).where(User.id == id))
+        await self.session.commit()

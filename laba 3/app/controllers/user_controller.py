@@ -1,21 +1,24 @@
-from app.services.user_service import *
+from typing import Annotated
+from services.user_service import *
 from litestar import Litestar, get, post, put, delete, patch
 from litestar.di import Provide
+from litestar.params import Body
+from litestar.dto import DTOData
 from litestar.controller import Controller
 from .UserResponse import *
+from uuid import UUID
 
 class UserController(Controller):
     path = "/users"
-    dependencies = {"user_service": Provide("user_service")}
 
-    @get("/{user_id:int}")
+    @get("/{user_id:uuid}")
     async def get_user_by_id(
         self,
         user_service: UserService,
-        user_id: uuid,
+        user_id: UUID,
     ) -> UserResponse:
         """Получить пользователя по ID"""
-        user = await user_service.get_user_by_id(user_id)
+        user = await user_service.get_by_id(user_id)
         if not user:
             raise Exception(detail=f"User with ID {user_id} not found")
         return self.map_user_to_response(user)
@@ -27,41 +30,40 @@ class UserController(Controller):
     ) -> list[UserResponse]:
         """Получить всех пользователей"""
         users = await user_service.get_by_filter()
-        return list(map(self.map_user_to_response, users))
+        return [self.map_user_to_response(user) for user in users]
         
 
-    @post()
+    @post("/")
     async def create_user(
         self,
         user_service: UserService,
-        user_data: UserCreate,
+        data: UserCreate = Body(),
         ) -> UserResponse:
         """Добавить пользователя"""
-        user = await user_service.create(user_data)
+        user = await user_service.create(data)
         return self.map_user_to_response(user)
 
-    @delete("/{user_id:int}")
+    @delete("/{user_id:uuid}")
     async def delete_user(
         self,
         user_service: UserService,
-        user_id: int,
+        user_id: UUID,
     ) -> None:
         """Удалить пользователя"""
         await user_service.delete(user_id)
 
-    @put("/{user_id:int}")
+    @put("/{user_id:uuid}")
     async def update_user(
         self,
         user_service: UserService,
-        user_id: int,
-        user_data: UserCreate,
+        user_id: UUID,
+        data: UserUpdate = Body(),
     ) -> UserResponse:
         """Обновить пользователя"""
-        updated = await user_service.update(user_id, user_data)
+        updated = await user_service.update(user_id, data)
         return self.map_user_to_response(updated)
 
-
-    def map_user_to_response(user: User) -> UserResponse:
+    def map_user_to_response(self, user: User) -> UserResponse:
         return UserResponse(
             id=user.id,
             login=user.login,
