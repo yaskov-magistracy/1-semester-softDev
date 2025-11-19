@@ -1,5 +1,5 @@
 from typing import Annotated
-from services.user_service import *
+from ..services.user_service import *
 from litestar import Litestar, get, post, put, delete, patch
 from litestar.di import Provide
 from litestar.params import Body
@@ -20,7 +20,7 @@ class UserController(Controller):
         """Получить пользователя по ID"""
         user = await user_service.get_by_id(user_id)
         if not user:
-            raise Exception(detail=f"User with ID {user_id} not found")
+            raise ValueError(f"User with ID {user_id} not found")
         return self.map_user_to_response(user)
 
     @get()

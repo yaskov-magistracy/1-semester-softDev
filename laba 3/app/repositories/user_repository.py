@@ -1,9 +1,9 @@
 from uuid import UUID
 from sqlalchemy import select, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
-from models import User
-from DTO.UserCreate import *
-from DTO.UserUpdate import *
+from ..models import User
+from ..DTO.UserCreate import *
+from ..DTO.UserUpdate import *
 
 
 class UserRepository():
@@ -17,6 +17,13 @@ class UserRepository():
         
         return result.scalars().one_or_none()
 
+    async def get_by_email(self, email) -> User | None:
+        result = await self.session.execute(
+            select(User)
+            .where(User.email == email))
+        
+        return result.scalars().one_or_none()
+    
     async def get_by_filters(self, skip: int = 0, limit: int = 100, **filters) -> list[User]:
         result = await self.session.execute(
             select(User)

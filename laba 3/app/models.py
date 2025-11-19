@@ -29,6 +29,7 @@ class Product(Base):
 
     id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, unique=True, default=uuid4)
     name: Mapped[str] = mapped_column(String(40), unique=True, nullable=False)
+    quantity: Mapped[int] = mapped_column(Integer, default=0, nullable=False) 
     created_at: Mapped[datetime] = mapped_column(default=datetime.now)
     updated_at: Mapped[datetime] = mapped_column(default=datetime.now)
 
@@ -38,7 +39,7 @@ class Order(Base):
     __tablename__ = "orders"
 
     id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, unique=True, default=uuid4)
-    date: Mapped[datetime] = mapped_column()
+    date: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     user_id: Mapped[UUID] = mapped_column(ForeignKey('users.id'), nullable=False)
     address_id: Mapped[UUID] = mapped_column(ForeignKey('addresses.id'), nullable=False)
     product_id: Mapped[UUID] = mapped_column(ForeignKey('products.id'), nullable=False)

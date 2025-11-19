@@ -1,10 +1,11 @@
-from repositories.user_repository import *
+from ..repositories.user_repository import *
+import uuid
 
 class UserService:
     def __init__(self, user_repository: UserRepository):
         self.user_repository = user_repository
 
-    async def get_by_id(self, user_id: int) -> User | None:
+    async def get_by_id(self, user_id: uuid.UUID) -> User | None:
         user = await self.user_repository.get_by_id(user_id)
         return user
 
@@ -14,8 +15,8 @@ class UserService:
     async def create(self, user_data: UserCreate) -> User:
         return await self.user_repository.create(user_data)
 
-    async def update(self, user_id: int, user_data: UserUpdate) -> User:
+    async def update(self, user_id: uuid.UUID, user_data: UserUpdate) -> User:
         return await self.user_repository.update(user_id, user_data)
 
-    async def delete(self, user_id: int) -> None:
+    async def delete(self, user_id: uuid.UUID) -> None:
         return await self.user_repository.delete(user_id)
