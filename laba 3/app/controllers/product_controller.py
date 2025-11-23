@@ -1,13 +1,13 @@
-from typing import Annotated
-from ..services.product_service import ProductService
-from litestar import Litestar, get, post, put, delete, patch
-from litestar.di import Provide
-from litestar.params import Body
-from litestar.dto import DTOData
-from litestar.controller import Controller
-from .ProductResponse import ProductResponse
-from ..DTO.ProductCreate import ProductCreate
 from uuid import UUID
+
+from litestar import delete, get, post, put
+from litestar.controller import Controller
+from litestar.params import Body
+
+from ..DTO.ProductCreate import ProductCreate
+from ..services.product_service import ProductService
+from .ProductResponse import ProductResponse
+
 
 class ProductController(Controller):
     path = "/products"
@@ -32,14 +32,13 @@ class ProductController(Controller):
         """Получить все продукты"""
         products = await product_service.get_by_filter()
         return [self.map_product_to_response(product) for product in products]
-        
 
     @post("/")
     async def create_product(
         self,
         product_service: ProductService,
         data: ProductCreate = Body(),
-        ) -> ProductResponse:
+    ) -> ProductResponse:
         """Добавить продукт"""
         product = await product_service.create(data)
         return self.map_product_to_response(product)
@@ -69,5 +68,5 @@ class ProductController(Controller):
             id=product.id,
             name=product.name,
             created_at=product.created_at,
-            updated_at=product.updated_at
+            updated_at=product.updated_at,
         )

@@ -1,12 +1,15 @@
-from typing import Annotated
-from ..services.user_service import *
-from litestar import Litestar, get, post, put, delete, patch
-from litestar.di import Provide
-from litestar.params import Body
-from litestar.dto import DTOData
-from litestar.controller import Controller
-from .UserResponse import *
 from uuid import UUID
+
+from litestar import delete, get, post, put
+from litestar.controller import Controller
+from litestar.params import Body
+
+from ..DTO.UserCreate import UserCreate
+from ..DTO.UserUpdate import UserUpdate
+from ..models import User
+from ..services.user_service import UserService
+from .UserResponse import UserResponse
+
 
 class UserController(Controller):
     path = "/users"
@@ -31,14 +34,13 @@ class UserController(Controller):
         """Получить всех пользователей"""
         users = await user_service.get_by_filter()
         return [self.map_user_to_response(user) for user in users]
-        
 
     @post("/")
     async def create_user(
         self,
         user_service: UserService,
         data: UserCreate = Body(),
-        ) -> UserResponse:
+    ) -> UserResponse:
         """Добавить пользователя"""
         user = await user_service.create(data)
         return self.map_user_to_response(user)
@@ -68,5 +70,5 @@ class UserController(Controller):
             id=user.id,
             login=user.login,
             email=user.email,
-            description=user.description or ""
+            description=user.description or "",
         )

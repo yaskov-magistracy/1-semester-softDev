@@ -1,6 +1,7 @@
-from pydantic import BaseModel
 import uuid
-import datetime
+
+from pydantic import BaseModel
+
 
 class AddressResponse(BaseModel):
     id: uuid.UUID

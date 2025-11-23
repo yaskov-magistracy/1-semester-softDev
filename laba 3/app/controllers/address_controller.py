@@ -1,12 +1,14 @@
-from typing import Annotated
-from ..services.address_service import *
-from litestar import Litestar, get, post, put, delete, patch
-from litestar.di import Provide
-from litestar.params import Body
-from litestar.dto import DTOData
-from litestar.controller import Controller
-from .AddressResponse import *
 from uuid import UUID
+
+from litestar import delete, get, post, put
+from litestar.controller import Controller
+from litestar.params import Body
+
+from ..DTO.AddressCreate import AddressCreate
+from ..models import Address
+from ..services.address_service import AddressService
+from .AddressResponse import AddressResponse
+
 
 class AddressController(Controller):
     path = "/addresses"
@@ -31,14 +33,13 @@ class AddressController(Controller):
         """Получить все адреса"""
         addresses = await address_service.get_by_filter()
         return [self.map_address_to_response(address) for address in addresses]
-        
 
     @post("/")
     async def create_address(
         self,
         address_service: AddressService,
         data: AddressCreate = Body(),
-        ) -> AddressResponse:
+    ) -> AddressResponse:
         """Добавить адрес"""
         address = await address_service.create(data)
         return self.map_address_to_response(address)
@@ -69,5 +70,5 @@ class AddressController(Controller):
             user_id=address.user_id,
             street=address.street,
             created_at=address.created_at,
-            updated_at=address.updated_at
+            updated_at=address.updated_at,
         )

@@ -4,5 +4,7 @@
 2. Скачать зависимости из `requirements.txt`
 3. Провести миграции БД
 4. Запустить `python app/main.py`
-5. Сваггер на урле - http://127.0.0.1:8000/schema/swagger
+5. Сваггер на урле - `http://127.0.0.1:8000/schema/swagger`
 6. Для запуска тестов - `python -m pytest`
+7. Установка хуков - `pre-commit install`
+8. Запуск на всех файлах `pre-commit run --all-files`

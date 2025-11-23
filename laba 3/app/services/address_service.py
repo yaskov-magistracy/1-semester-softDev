@@ -1,7 +1,10 @@
-from ..repositories.address_repository import AddressRepository
-from ..DTO.AddressCreate import AddressCreate
 from uuid import UUID
+
 from app.models import Address
+
+from ..DTO.AddressCreate import AddressCreate
+from ..repositories.address_repository import AddressRepository
+
 
 class AddressService:
     def __init__(self, address_repository: AddressRepository):
@@ -11,7 +14,9 @@ class AddressService:
         address = await self.address_repository.get_by_id(address_id)
         return address
 
-    async def get_by_filter(self, skip: int = 0, limit: int = 100, **filters) -> list[Address]:
+    async def get_by_filter(
+        self, skip: int = 0, limit: int = 100, **filters
+    ) -> list[Address]:
         return await self.address_repository.get_by_filters(skip, limit, **filters)
 
     async def create(self, address_data: AddressCreate) -> Address:

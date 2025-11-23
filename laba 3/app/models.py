@@ -1,20 +1,22 @@
-
-from sqlalchemy.ext.asyncio import AsyncAttrs
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy import String, ForeignKey
-from sqlalchemy import *
-from sqlalchemy.orm import *
 from datetime import datetime
 from uuid import uuid4
+
+from sqlalchemy import DateTime, ForeignKey, Integer, String
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.ext.asyncio import AsyncAttrs
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+
 
 class Base(AsyncAttrs, DeclarativeBase):
     __abstract__ = True
 
+
 class User(Base):
     __tablename__ = "users"
 
-    id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, unique=True, default=uuid4)
+    id: Mapped[UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, unique=True, default=uuid4
+    )
     login: Mapped[str] = mapped_column(String(40), unique=True, nullable=False)
     email: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
     description: Mapped[str] = mapped_column(String(255), unique=True, nullable=True)
@@ -24,38 +26,46 @@ class User(Base):
     addresses = relationship("Address", back_populates="user")
     orders = relationship("Order", back_populates="user")
 
+
 class Product(Base):
     __tablename__ = "products"
 
-    id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, unique=True, default=uuid4)
+    id: Mapped[UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, unique=True, default=uuid4
+    )
     name: Mapped[str] = mapped_column(String(40), unique=True, nullable=False)
-    quantity: Mapped[int] = mapped_column(Integer, default=0, nullable=False) 
+    quantity: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     created_at: Mapped[datetime] = mapped_column(default=datetime.now)
     updated_at: Mapped[datetime] = mapped_column(default=datetime.now)
 
     orders = relationship("Order", back_populates="product")
 
+
 class Order(Base):
     __tablename__ = "orders"
 
-    id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, unique=True, default=uuid4)
+    id: Mapped[UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, unique=True, default=uuid4
+    )
     date: Mapped[datetime] = mapped_column(DateTime(timezone=True))
-    user_id: Mapped[UUID] = mapped_column(ForeignKey('users.id'), nullable=False)
-    address_id: Mapped[UUID] = mapped_column(ForeignKey('addresses.id'), nullable=False)
-    product_id: Mapped[UUID] = mapped_column(ForeignKey('products.id'), nullable=False)
+    user_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"), nullable=False)
+    address_id: Mapped[UUID] = mapped_column(ForeignKey("addresses.id"), nullable=False)
+    product_id: Mapped[UUID] = mapped_column(ForeignKey("products.id"), nullable=False)
     created_at: Mapped[datetime] = mapped_column(default=datetime.now)
     updated_at: Mapped[datetime] = mapped_column(default=datetime.now)
 
     user = relationship("User", back_populates="orders")
     address = relationship("Address", back_populates="orders")
     product = relationship("Product", back_populates="orders")
-    
+
 
 class Address(Base):
     __tablename__ = "addresses"
 
-    id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, unique=True, default=uuid4)
-    user_id: Mapped[UUID] = mapped_column(ForeignKey('users.id'), nullable=False)
+    id: Mapped[UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, unique=True, default=uuid4
+    )
+    user_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"), nullable=False)
     street: Mapped[str] = mapped_column(nullable=False)
     created_at: Mapped[datetime] = mapped_column(default=datetime.now)
     updated_at: Mapped[datetime] = mapped_column(default=datetime.now)

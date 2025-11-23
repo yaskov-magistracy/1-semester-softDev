@@ -1,0 +1,32 @@
+[tool.isort]
+profile = "black"
+known_first_party = ["app"]
+skip = []
+
+[tool.black]
+line-length = 88
+target-version = ['py313']
+exclude = '''
+/(
+    \.git
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | docker
+    | config
+    | temp
+    | migrations
+    | tests
+    | docker-compose.yaml
+    | fill1.py
+    | fill2.py
+    | select1.py
+    | session.py
+    | test.db
+    | alembic.ini
+)/
+'''

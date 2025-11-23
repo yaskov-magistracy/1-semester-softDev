@@ -1,13 +1,13 @@
-from typing import Annotated
-from ..services.order_service import OrderService
-from litestar import Litestar, get, post, put, delete, patch
-from litestar.di import Provide
-from litestar.params import Body
-from litestar.dto import DTOData
-from litestar.controller import Controller
-from .OrderResponse import OrderResponse
-from ..DTO.OrderCreate import OrderCreate
 from uuid import UUID
+
+from litestar import delete, get, post, put
+from litestar.controller import Controller
+from litestar.params import Body
+
+from ..DTO.OrderCreate import OrderCreate
+from ..services.order_service import OrderService
+from .OrderResponse import OrderResponse
+
 
 class OrderController(Controller):
     path = "/orders"
@@ -32,14 +32,13 @@ class OrderController(Controller):
         """Получить все заказы"""
         orders = await order_service.get_by_filter()
         return [self.map_order_to_response(order) for order in orders]
-        
 
     @post("/")
     async def create_order(
         self,
         order_service: OrderService,
         data: OrderCreate = Body(),
-        ) -> OrderResponse:
+    ) -> OrderResponse:
         """Добавить заказ"""
         order = await order_service.create(data)
         return self.map_order_to_response(order)
@@ -72,5 +71,5 @@ class OrderController(Controller):
             address_id=order.address_id,
             product_id=order.product_id,
             created_at=order.created_at,
-            updated_at=order.updated_at
+            updated_at=order.updated_at,
         )

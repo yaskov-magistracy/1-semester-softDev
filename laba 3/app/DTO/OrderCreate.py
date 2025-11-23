@@ -1,6 +1,8 @@
-from pydantic import BaseModel
-import uuid
 import datetime
+import uuid
+
+from pydantic import BaseModel
+
 
 class OrderCreate(BaseModel):
     user_id: uuid.UUID

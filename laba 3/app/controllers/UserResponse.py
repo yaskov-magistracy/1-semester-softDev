@@ -1,9 +1,10 @@
-from uuid import uuid4
 import uuid
+
 from pydantic import BaseModel
+
 
 class UserResponse(BaseModel):
     id: uuid.UUID
-    login: str 
-    email: str 
-    description: str 
+    login: str
+    email: str
+    description: str

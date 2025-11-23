@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   postgres:
     image: postgres
@@ -11,7 +13,16 @@ services:
       - postgres_data:/var/lib/postgresql/data/
     networks:
       - my_network
-
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://postgres:password@postgres:5432/python
+      - DB_HOST=postgres
+      - DB_PORT=5432
+    depends_on:
+      - postgres
 volumes:
   postgres_data:
 
