@@ -22,6 +22,7 @@ from .services.address_service import AddressService
 from .services.order_service import OrderService
 from .services.product_service import ProductService
 from .services.user_service import UserService
+from .rabbitmq.consumer import start_consumers
 
 URL = (
     "postgresql+asyncpg://postgres:password@localhost:5432/"
@@ -112,6 +113,7 @@ app = Litestar(
         "address_service": Provide(provide_address_service),
     },
     debug=True,
+    on_startup=[start_consumers],
 )
 
 if __name__ == "__main__":

@@ -23,8 +23,19 @@ services:
       - DB_PORT=5432
     depends_on:
       - postgres
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      - RABBITMQ_DEFAULT_VHOST=local
+    volumes:
+      - rabbitmq_data:/data
+
 volumes:
   postgres_data:
+  rabbitmq_data:
 
 networks:
   my_network:

@@ -61,3 +61,4 @@ typing_extensions==4.15.0
 tzdata==2025.2
 uvicorn==0.38.0
 virtualenv==20.35.4
+rabbitmq-client==2.4.0
